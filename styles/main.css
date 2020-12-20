@@ -66,6 +66,14 @@ textarea {
    YOUR STYLES GO HERE ...
 ========================================================================== */
 
+:root {
+    --mainBlue: rgb(94, 175, 202);
+    --secondaryBlue: rgb(13, 93, 119);
+    --mainGrey: rgb(41, 39, 39);
+    --secondaryGrey: rgb(156, 156, 156);
+    --mainTransition: 0.2s all linear;
+}
+
 * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -74,7 +82,8 @@ textarea {
     padding: 0;
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
-    -webkit-overflow-scrolling: touch; 
+    -webkit-overflow-scrolling: touch;
+    font-family: 'Source Sans Pro', sans-serif; 
 }
 
 html {
@@ -82,17 +91,134 @@ html {
     height: 100%;
     font-size: 1em;
     line-height: 1.4;
-    background-color: white;
 }
 
 body {
     width: 100%;
     min-height: 100%;
-    background-color: white;
 }
 
+/* navbar */
+.navbar {
+    position: sticky;
+    top: 0;
+    left: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    background: var(--mainBlue);
+    z-index: 1;
+    color: white;
+}
+
+.navbar-center {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    justify-content: space-between;
+    padding: 0 3rem;
+}
+
+.nav-icon {
+    font-size: 1.2rem;
+}
+
+.card-btn {
+    position: relative;
+    cursor: pointer;
+}
+
+.card-items {
+    position: absolute;
+    top: -0.5rem;
+    right: -0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mainGrey);
+    color: white;
+    width: 0.9rem;
+    height: 1.2rem;
+    border-radius: 5px;
+    font-size: 0.8em;
+}
+
+/* hero */
+.hero {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 60px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--secondaryGrey);
+    color: white;
+}
+
+.banner > h1 {
+    font-size: 8vw;
+    letter-spacing: 3vw;
+    margin-left: 3vw;
+    transition: var(--mainTransition);
+    text-transform: uppercase;
+}
+
+.banner-btn {
+    position: absolute;
+    top: 75%;
+    cursor: pointer;
+    background: none;
+    border: white 2px solid;
+    border-radius: 12px;
+    padding: 0.5rem 0.9rem;
+    color: white;
+    letter-spacing: 0.15rem;
+    font-weight: bolder;
+    outline: none;
+    transition: var(--mainTransition);
+    text-transform: uppercase;
+}
+
+.banner-btn:hover {
+    background: white;
+    color: var(--secondaryGrey);
+}
+
+/* products */
+.products {
+    width: 100%;
+    padding: 3rem 0;
+}
+
+.products-title {
+    text-transform: capitalize;
+    font-size: 2rem;
+    text-align: center;
+    padding-bottom: 3rem;
+}
+
+.products-center {
+    display: grid;
+    grid-template-columns: repeat();
+    width: 90vw;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+
 /* Small devices (landscape phones, 576px and up) */
-@media only screen and (min-width: 576px) {}
+@media only screen and (min-width: 576px) {
+    .banner > h1 {
+        font-size: 2.8rem;
+        letter-spacing: 1.5rem;
+        margin-left: 1.5rem;
+    }
+}
 
 /* Medium devices (tablets, 768px and up) */
 @media only screen and (min-width: 768px) {}

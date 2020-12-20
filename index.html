@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Shopping Card Template</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- add google search description here -->
@@ -26,22 +26,62 @@
     <!-- Place favicon.ico in the root directory -->
     <link rel="apple-touch-icon" href="icon.png">
 
+    <!-- Preload your font(s) here by adding the href and type -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap" rel="stylesheet">
+
     <!-- Style links -->
     <link rel="stylesheet" href="styles/normalize.min.css">
     <link rel="stylesheet" href="styles/main.css">
 
-    <!-- Preload your font(s) here by adding the href and type -->
-    <link rel="preload" href="" as="font" type="font/" crossorigin>
-
     <!-- Place CDN vendor here -->
-    <script src="" integrity="" crossorigin="anonymous"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
 </head>
 
 <body>
     
     <!-- SITE CONTENT STARTS HERE -->
 
-    <p>Yo!</p>
+    <!-- navbar -->
+    <nav class="navbar">
+        <div class="navbar-center">
+            <span class="nav-icon"><i class="fas fa-bars"></i></span>
+            <h3>Shopping Card</h3>
+            <div class="nav-icon card-btn">
+                <span><i class="fas fa-cart-plus"></i></span>
+                <div class="card-items">0</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- hero -->
+    <div class="hero">
+        <div class="banner">
+            <h1>hero banner</h1>
+        </div>
+        <button class="banner-btn">shop now</button>
+    </div>
+    <!-- end of hero -->
+
+    <!-- products -->
+    <section class="products" id="products">
+        <div class="products-title">products</div>
+        <div class="products-center">
+            <!-- single product -->
+            <div class="product">
+                <div class="img-container">
+                    <img src="./assets/images/product-1.png" alt="product immage" class="product-img">
+                    <button class="bag-btn">
+                        <i class="fas fa-shopping-cart">add to bag</i>
+                    </button>
+                </div>
+                <h3>product name</h3>
+                <h2>$0</h2>
+            </div>
+            <!-- end of single product -->
+        </div>
+    </section>
+    <!-- end of products -->
 
     <!-- SITE CONTENT ENDS HERE -->
 
