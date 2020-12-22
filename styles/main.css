@@ -67,11 +67,13 @@ textarea {
 ========================================================================== */
 
 :root {
+    --mainWhite: rgb(230, 230, 230);
     --mainBlue: rgb(94, 175, 202);
     --secondaryBlue: rgb(13, 93, 119);
     --mainGrey: rgb(41, 39, 39);
     --secondaryGrey: rgb(156, 156, 156);
     --mainTransition: 0.2s all linear;
+    --secondaryTransition: 0.3s all ease;
 }
 
 * {
@@ -184,8 +186,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: var(--secondaryGrey);
-    color: white;
+    background: var(--mainWhite);
 }
 
 .banner > h1 {
@@ -204,10 +205,10 @@ body {
 .btn-styles {
     cursor: pointer;
     background: none;
-    border: white 2px solid;
+    border: grey 2px solid;
     border-radius: 12px;
     padding: 0.5rem 0.9rem;
-    color: white;
+    color: grey;
     letter-spacing: 0.15rem;
     font-weight: bolder;
     transition: var(--mainTransition);
@@ -215,8 +216,8 @@ body {
 }
 
 .btn-styles:hover {
-    background: white;
-    color: var(--secondaryGrey);
+    background: grey;
+    color: var(--mainWhite);
 }
 
 /* products */
@@ -278,6 +279,7 @@ body {
 
 .product-name {
     text-align: center;
+    text-transform: capitalize;
     margin: 0.8rem 0 0 0;
 }
 
@@ -303,19 +305,18 @@ body {
     height: 100%;
     background: rgba(13, 93, 119, 0.7);
     z-index: 2;
-    visibility: visible;
-    color: white;
+    visibility: hidden;
 }
 
 .cart {
     position: fixed;
     top: 0;
-    right: 0;
+    right: -100%;
     width: 100%;
     min-width: 300px;
     height: 100%;
-    background: var(--secondaryGrey);
-    transition: var(--mainTransition);
+    background: var(--mainWhite);
+    transition: var(--secondaryTransition);
     z-index: 3;
     padding: 2rem;
     overflow-y: scroll;
@@ -323,6 +324,7 @@ body {
 
 .close-cart {
     font-size: 1.3rem;
+    cursor: pointer;
 }
 
 .cart h2 {
@@ -347,12 +349,18 @@ body {
 .cart-item img {
     width: 120px;
     height: auto;
+    border-radius: 6px;
 }
 
 .remove-item {
     cursor: pointer;
     text-transform: uppercase;
     font-size: 0.9rem;
+}
+
+.fa-chevron-up,
+.fa-chevron-down {
+    cursor: pointer;
 }
 
 .cart-item div {
@@ -367,7 +375,7 @@ body {
 
 .cart-item div h5,
 .cart-footer h3 {
-    color: var(--secondaryBlue);
+    color: var(--mainBlue);
 }
 
 .cart-item div i {
@@ -408,6 +416,10 @@ body {
     .products-center {
         width: 85vw;
     }
+
+    .cart {
+        width: 50%;
+    }
 }
 
 /* Large devices (desktops, 992px and up) */
@@ -415,10 +427,18 @@ body {
     .products-center {
         width: 90vw;
     }
+
+    .cart {
+        width: 40%;
+    }
 }
 
 /* Extra large devices (large desktops, 1200px and up) */
-@media only screen and (min-width: 1200px) {}
+@media only screen and (min-width: 1200px) {
+    .cart {
+        width: 30%;
+    }
+}
 
 /* ==========================================================================
    Helper classes
