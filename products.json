@@ -1,68 +1,52 @@
 {
-  "items": [
-    {
-      "sys": { "id": "1" },
-      "fields": {
-        "title": "queen panel bed",
-        "price": 10.99,
-        "image": { "fields": { "file": { "url": "./images/product-1.jpeg" } } }
-      }
-    },
-    {
-      "sys": { "id": "2" },
-      "fields": {
-        "title": "king panel bed",
-        "price": 12.99,
-        "image": { "fields": { "file": { "url": "./images/product-2.jpeg" } } }
-      }
-    },
-    {
-      "sys": { "id": "3" },
-      "fields": {
-        "title": "single panel bed",
-        "price": 12.99,
-        "image": { "fields": { "file": { "url": "./images/product-3.jpeg" } } }
-      }
-    },
-    {
-      "sys": { "id": "4" },
-      "fields": {
-        "title": "twin panel bed",
-        "price": 22.99,
-        "image": { "fields": { "file": { "url": "./images/product-4.jpeg" } } }
-      }
-    },
-    {
-      "sys": { "id": "5" },
-      "fields": {
-        "title": "fridge",
-        "price": 88.99,
-        "image": { "fields": { "file": { "url": "./images/product-5.jpeg" } } }
-      }
-    },
-    {
-      "sys": { "id": "6" },
-      "fields": {
-        "title": "dresser",
-        "price": 32.99,
-        "image": { "fields": { "file": { "url": "./images/product-6.jpeg" } } }
-      }
-    },
-    {
-      "sys": { "id": "7" },
-      "fields": {
-        "title": "couch",
-        "price": 45.99,
-        "image": { "fields": { "file": { "url": "./images/product-7.jpeg" } } }
-      }
-    },
-    {
-      "sys": { "id": "8" },
-      "fields": {
-        "title": "table",
-        "price": 33.99,
-        "image": { "fields": { "file": { "url": "./images/product-8.jpeg" } } }
-      }
-    }
-  ]
+    "items": [
+        {
+            "id": 1,
+            "name": "product-1",
+            "price": 10,
+            "image": "./assets/images/product-1.png"
+        },
+        {
+            "id": 2,
+            "name": "product-2",
+            "price": 20,
+            "image": "./assets/images/product-2.png"
+        },
+        {
+            "id": 3,
+            "name": "product-3",
+            "price": 30,
+            "image": "./assets/images/product-3.png"
+        },
+        {
+            "id": 4,
+            "name": "product-4",
+            "price": 40,
+            "image": "./assets/images/product-4.png"
+        },
+        {
+            "id": 5,
+            "name": "product-5",
+            "price": 50,
+            "image": "./assets/images/product-5.png"
+        },
+        {
+            "id": 6,
+            "name": "product-6",
+            "price": 60,
+            "image": "./assets/images/product-6.png"
+        },
+        {
+            "id": 7,
+            "name": "product-7",
+            "price": 70,
+            "image": "./assets/images/product-7.png"
+        },
+        {
+            "id": 8,
+            "name": "product-8",
+            "price": 80,
+            "image": "./assets/images/product-8.png"
+        }
+    ]
 }

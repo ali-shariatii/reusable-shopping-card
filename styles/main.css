@@ -73,8 +73,8 @@ textarea {
     --secondaryBlue: rgb(13, 93, 119);
     --mainGrey: rgb(41, 39, 39);
     --secondaryGrey: rgb(156, 156, 156);
-    --mainTransition: 0.2s all linear;
-    --secondaryTransition: 0.3s all ease;
+    --mainTransition: 0.3s all ease;
+    --secondaryTransition: 0.7s all ease;
 }
 
 * {
@@ -245,24 +245,31 @@ body {
     width: 85vw;
     max-width: 1200px;
     margin: 0 auto;
+    transition: var(--mainTransition);
+}
+
+.products-center p {
+    text-align: center;
+    text-transform: capitalize;
 }
 
 /* a single product */
 .img-container {
     position: relative;
     overflow: hidden;
+    transition: var(--mainTransition);
+    border-radius: 12px;
 }
 
 .img-container img {
     width: 100%;
-    border-radius: 12px;
     transition: var(--mainTransition);
 }
 
 .bag-btn {
     position: absolute;
     right: -131px;
-    bottom: 20%;
+    bottom: 15%;
     border: none;
     background: white;
     color: var(--mainBlue);
@@ -297,6 +304,11 @@ body {
     opacity: 0.5;
 }
 
+.product:hover .img-container  {
+    scale: 1.03;
+    background: var(--mainGrey);
+}
+
 .fa-shopping-cart {
     margin-right: 0.5rem;
 }
@@ -313,6 +325,7 @@ body {
     background: rgba(13, 93, 119, 0.7);
     z-index: 2;
     visibility: hidden;
+    transition: var(--mainTransition);
 }
 
 .cart {
@@ -323,7 +336,7 @@ body {
     min-width: 300px;
     height: 100%;
     background: var(--mainWhite);
-    transition: var(--secondaryTransition);
+    transition: var(--mainTransition);
     z-index: 3;
     padding: 2rem;
     overflow-y: scroll;
@@ -439,6 +452,7 @@ body {
 
     .cart {
         width: 40%;
+        transition: var(--secondaryTransition);
     }
 }
 
@@ -446,6 +460,7 @@ body {
 @media only screen and (min-width: 1200px) {
     .cart {
         width: 30%;
+        max-width: 600px;
     }
 }
 
