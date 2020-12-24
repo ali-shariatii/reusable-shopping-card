@@ -345,6 +345,11 @@ body {
 .close-cart {
     font-size: 1.3rem;
     cursor: pointer;
+    transition: var(--mainTransition);
+}
+
+.close-cart:hover {
+    color: var(--mainBlue);
 }
 
 .cart h2 {

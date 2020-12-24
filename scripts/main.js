@@ -17,6 +17,7 @@ const cart = elm('.cart');
 const closeCart = elm('.close-cart');
 const productsDisplayer = elm('.products-center');
 const cartContent = elm('.cart-content');
+const cartItems = elm('.cart-items');
 
 /* page transitions (navbar & hero) */
 landingPageSection.addEventListener('click', () => {
@@ -147,6 +148,9 @@ class Products {
 
                         this.style.background = 'rgb(94, 175, 202)';
                         this.style.color = 'white';
+
+                        cartItems.innerHTML ++;
+                        CartList.itemsAmount();
                     } else {
                         cartOverly.style.visibility = "visible";
                         cart.style.right = "0%";
@@ -160,12 +164,40 @@ class Products {
     }
 }
 
+
+/* shopping cart sidebar */
+class CartList {
+    // chevron functions
+     static itemsAmount() {
+        // update item icon
+        let addItem = elms('.fa-chevron-up');
+        let itemsAmount = elms('.item-amount')
+        let subtractItem = elms('.fa-chevron-up');
+        
+            // get access to each chevron number 
+            // get access to each chevron up & down
+            // on click change chevron item accordingly
+    }
+        
+    // total
+    cartTotal() {
+        // update it based on the chevrons
+    }
+    // clear cart
+}
+
+
 /* invoking functions on DOM content load */
 document.addEventListener('DOMContentLoaded', () => {
+    //const cartList = new CartList();
     const products = new Products();
 
-    // getting, displaying & adding products
+
     products.addProducts();
+
+
+
+    // getting, displaying & adding products
 
 });
 
