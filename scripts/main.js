@@ -13,12 +13,13 @@ const menuBarOptions = qElms('.dropdown-menu li');
 const cartBtn = qElm('.cart-btn');
 const page = qElm('body');
 const bannerBtn = qElm('.banner-btn');
+const productsDisplayer = qElm('.products-center');
 const cartOverly = qElm('.cart-overlay');
 const cart = qElm('.cart');
 const closeCart = qElm('.close-cart');
-const productsDisplayer = qElm('.products-center');
 const cartContent = qElm('.cart-content');
 const cartItemsNumber = qElm('.cart-items-number');
+const totalPriceDisplayer = qElm('.total-price')
 
 /* page transitions (navbar & hero) */
 landingPageSection.addEventListener('click', () => {
@@ -180,7 +181,7 @@ class CartList {
 
             addAmount.addEventListener('click', () => {
                 itemAmount.innerHTML ++;
-                this.totalItemsNumber();
+                this.totalItems();
                 this.totalPrice();
             });
 
@@ -188,49 +189,70 @@ class CartList {
                 if (itemAmount.innerHTML === '1') {
                     itemAmount.innerHTML = 1;
                     removeItem.style.animation = 'alert 0.3s';
-                    this.totalItemsNumber();
+                    this.totalItems();
                     this.totalPrice();
                     setTimeout(() => {
                         removeItem.style.removeProperty('animation');
                     }, 300);
                 } else {
                     itemAmount.innerHTML --;
-                    this.totalItemsNumber();
+                    this.totalItems();
                     this.totalPrice();
                 }
             });
         });
     }
 
-    static totalItemsNumber() {
-        let totalItemsNumber = qElms('.item-amount', cartContent);
-        let totalItemsNumberArray = [];
-        totalItemsNumber.forEach(element => totalItemsNumberArray.push(Number(element.innerHTML)));
+    static totalItems() {
+        let totalItems = qElms('.item-amount', cartContent);
+        let totalItemsArray = [];
+        totalItems.forEach(element => totalItemsArray.push(Number(element.innerHTML)));
         let totalResult = 0;
         
         (() => {
-            for(let i = 0; i < totalItemsNumberArray.length; i++) {
-                totalResult += totalItemsNumberArray[i];
+            for(let i = 0; i < totalItemsArray.length; i++) {
+                totalResult += totalItemsArray[i];
                 cartItemsNumber.innerHTML = totalResult;
             }
         })();
     }
         
     static totalPrice() {
-        // item-cart h5 > price
-        // item-amount > amount
+        let cartItems = cElms('cart-item', cartContent);
+        let cartItemsArray = Array.from(cartItems);
+        let itemsPricesArray = [];
+        let itemsAmountsArray = [];
+        let totalPrice = 0;
+        cartItemsArray.forEach(element => {
+            //create prices array
+            itemsPricesArray.push(Number(element.childNodes[3].childNodes[3].innerHTML.slice(1)))
+            //create amounts array
+            itemsAmountsArray.push(Number(element.childNodes[5].childNodes[3].innerHTML))
+        });
+
+        for (let i = 0; i <itemsPricesArray.length; i++) {
+            console.clear();
+            totalPrice += itemsPricesArray[i] * itemsAmountsArray[i];
+            totalPriceDisplayer.innerHTML = totalPrice;
+        }        
+    }
+
+    removeItem() {
+
+    }
+
+    clearCart() {
+
     }
 }
 
 /* invoking functions on DOM content load */
 document.addEventListener('DOMContentLoaded', () => {
-    const cartList = new CartList();
+    // const cartList = new CartList();
     const products = new Products();
 
-    products.addProducts();
-
     // getting, displaying & adding products
-// cartList.totalItemsNumber();
+    products.addProducts();
 });
 
 
