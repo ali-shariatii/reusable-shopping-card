@@ -165,16 +165,16 @@ body {
     cursor: pointer;
 }
 
-.cart-items {
+.cart-items-number {
     position: absolute;
     top: -0.5rem;
-    right: -0.5rem;
+    left: 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--mainGrey);
     color: white;
-    width: 0.9rem;
+    padding: 0 0.2rem;
     height: 1.2rem;
     border-radius: 5px;
     font-size: 0.8em;
@@ -381,6 +381,19 @@ body {
     cursor: pointer;
     text-transform: uppercase;
     font-size: 0.9rem;
+    width: fit-content;
+    border: 1px solid transparent;
+}
+
+@keyframes alert {
+    0%, 100% {
+        color: black; 
+        border: 1px solid transparent;
+    }
+    50% {
+        color:red; 
+        border: 1px solid red;
+    }
 }
 
 .fa-chevron-up,

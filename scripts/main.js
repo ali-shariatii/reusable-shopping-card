@@ -1,23 +1,24 @@
 "use strict";
 
 /* variable generators */
-let elm = (elm) => document.querySelector(elm);
-let elms = (elms) => document.querySelectorAll(elms);
+let qElm = (qElm, parent = document) => parent.querySelector(qElm);
+let qElms = (qElms, parent = document) => parent.querySelectorAll(qElms);
+let cElms = (cElms, parent = document) => parent.getElementsByClassName(cElms);
 
 /* variables declarations */
-const landingPageSection = elm('.navbar-center h3');
-const menuBtn = elms('.nav-icon')[0];
-const menuBar = elm('.dropdown-menu');
-const menuBarOptions = elms('.dropdown-menu li');
-const cartBtn = elm('.cart-btn');
-const page = elm('body');
-const bannerBtn = elm('.banner-btn');
-const cartOverly = elm('.cart-overlay');
-const cart = elm('.cart');
-const closeCart = elm('.close-cart');
-const productsDisplayer = elm('.products-center');
-const cartContent = elm('.cart-content');
-const cartItems = elm('.cart-items');
+const landingPageSection = qElm('.navbar-center h3');
+const menuBtn = qElms('.nav-icon')[0];
+const menuBar = qElm('.dropdown-menu');
+const menuBarOptions = qElms('.dropdown-menu li');
+const cartBtn = qElm('.cart-btn');
+const page = qElm('body');
+const bannerBtn = qElm('.banner-btn');
+const cartOverly = qElm('.cart-overlay');
+const cart = qElm('.cart');
+const closeCart = qElm('.close-cart');
+const productsDisplayer = qElm('.products-center');
+const cartContent = qElm('.cart-content');
+const cartItemsNumber = qElm('.cart-items-number');
 
 /* page transitions (navbar & hero) */
 landingPageSection.addEventListener('click', () => {
@@ -111,7 +112,7 @@ class Products {
                     <h3 class="product-price">$${element.price}</h3>
                 </div>`;
             });
-            const availableProducts = productsDisplayer.getElementsByClassName('product');
+            const availableProducts = cElms('product', productsDisplayer);
             return availableProducts;
         } catch(error) {
             console.log(`Fetch Error: ${error}`);
@@ -120,11 +121,11 @@ class Products {
 
     async addProducts() {
         try {
-            const availableProducts = await this.displayProducts();
+            const availableProducts = await this.displayProducts();       
             let productsArray = Array.from(availableProducts);
             productsArray.forEach(element => {
-                element.querySelector('button').addEventListener('click', function() {
-                    const bagStat = this.querySelector('span').innerHTML;
+                qElm('button', element).addEventListener('click', function() {
+                    const bagStat = qElm('span', this).innerHTML;
 
                     if (bagStat.includes("bag")) {
                         cartContent.innerHTML +=
@@ -149,8 +150,9 @@ class Products {
                         this.style.background = 'rgb(94, 175, 202)';
                         this.style.color = 'white';
 
-                        cartItems.innerHTML ++;
+                        cartItemsNumber.innerHTML ++;
                         CartList.itemsAmount();
+                        CartList.totalPrice();
                     } else {
                         cartOverly.style.visibility = "visible";
                         cart.style.right = "0%";
@@ -164,41 +166,71 @@ class Products {
     }
 }
 
-
 /* shopping cart sidebar */
 class CartList {
-    // chevron functions
-     static itemsAmount() {
-        // update item icon
-        let addItem = elms('.fa-chevron-up');
-        let itemsAmount = elms('.item-amount')
-        let subtractItem = elms('.fa-chevron-up');
-        
-            // get access to each chevron number 
-            // get access to each chevron up & down
-            // on click change chevron item accordingly
-    }
-        
-    // total
-    cartTotal() {
-        // update it based on the chevrons
-    }
-    // clear cart
-}
+    static itemsAmount() {
+        let cartItems = cElms('cart-item');
+        let cartItemsArray = Array.from(cartItems);
 
+        cartItemsArray.forEach(element => {
+            let itemAmount = qElm('.item-amount', element);
+            let addAmount = qElm('.fa-chevron-up', element);
+            let subtractAmount = qElm('.fa-chevron-down', element);
+            let removeItem = qElm('.remove-item', element);
+
+            addAmount.addEventListener('click', () => {
+                itemAmount.innerHTML ++;
+                this.totalItemsNumber();
+                this.totalPrice();
+            });
+
+            subtractAmount.addEventListener('click', () => {
+                if (itemAmount.innerHTML === '1') {
+                    itemAmount.innerHTML = 1;
+                    removeItem.style.animation = 'alert 0.3s';
+                    this.totalItemsNumber();
+                    this.totalPrice();
+                    setTimeout(() => {
+                        removeItem.style.removeProperty('animation');
+                    }, 300);
+                } else {
+                    itemAmount.innerHTML --;
+                    this.totalItemsNumber();
+                    this.totalPrice();
+                }
+            });
+        });
+    }
+
+    static totalItemsNumber() {
+        let totalItemsNumber = qElms('.item-amount', cartContent);
+        let totalItemsNumberArray = [];
+        totalItemsNumber.forEach(element => totalItemsNumberArray.push(Number(element.innerHTML)));
+        let totalResult = 0;
+        
+        (() => {
+            for(let i = 0; i < totalItemsNumberArray.length; i++) {
+                totalResult += totalItemsNumberArray[i];
+                cartItemsNumber.innerHTML = totalResult;
+            }
+        })();
+    }
+        
+    static totalPrice() {
+        // item-cart h5 > price
+        // item-amount > amount
+    }
+}
 
 /* invoking functions on DOM content load */
 document.addEventListener('DOMContentLoaded', () => {
-    //const cartList = new CartList();
+    const cartList = new CartList();
     const products = new Products();
-
 
     products.addProducts();
 
-
-
     // getting, displaying & adding products
-
+// cartList.totalItemsNumber();
 });
 
 
