@@ -22,7 +22,8 @@ const cartContent = qElm('.cart-content');
 const cartItemsNumber = qElm('.cart-items-number');
 const totalPriceDisplayer = qElm('.total-price');
 
-let cartStorage = [];
+let cartItemsStorage = [];
+let cartItems = [];
 
 /* page transitions (navbar & hero) */
 landingPageSection.addEventListener('click', () => {
@@ -122,80 +123,94 @@ class Products {
 /* shopping cart sidebar */
 class CartList {
     static async storeItems(availableProducts) {    
-            let productsArray = [ ... availableProducts];
-            productsArray.forEach(element => {
-                qElm('button', element).addEventListener('click', function() {
-                    let bagStat = qElm('span', this).innerHTML;
+        let productsArray = [ ... availableProducts];
+        productsArray.forEach(element => {
+            qElm('button', element).addEventListener('click', function() {
+                let bagStat = qElm('span', this).innerHTML;
 
-                    if (bagStat.includes("bag")) {
-                        let itemID = this.getAttribute('data-id');
-                        let itemImg = element.childNodes[1].childNodes[1].src;
-                        let itemName = element.childNodes[3].innerText;
-                        let itemPrice = element.childNodes[5].innerText;
-                        let cartItem = {
-                            itemID: itemID,
-                            itemName: itemName,
-                            itemPrice: itemPrice,
-                            itemImg: itemImg,
-                            itemAmount: 1,
-                            bagStat: 'Added'
-                        };
-    
-                        if (localStorage.getItem('Cart Items') !== null) {
-                            cartStorage = [ ... JSON.parse(localStorage.getItem('Cart Items'))];
-                        }
+                if (bagStat.includes("bag")) {
+                    let itemID = this.getAttribute('data-id');
+                    let itemImg = element.childNodes[1].childNodes[1].src;
+                    let itemName = element.childNodes[3].innerText;
+                    let itemPrice = element.childNodes[5].innerText;
+                    let cartItem = {
+                        itemID: itemID,
+                        itemName: itemName,
+                        itemPrice: itemPrice,
+                        itemImg: itemImg,
+                        itemAmount: 1,
+                        bagStat: 'Added'
+                    };
 
-                        cartStorage = [ ... cartStorage, cartItem];
-                        localStorage.setItem('Cart Items', JSON.stringify(cartStorage));
-
-                        cartItemsNumber.innerHTML ++;
-                        
-                        Storage.displayCartItems(); 
-                    } else {
-                        cartOverly.style.visibility = "visible";
-                        cart.style.right = "0%";
-                        page.style.overflowY = "hidden";
+                    if (localStorage.getItem('Cart Items') !== null) {
+                        cartItemsStorage = [ ... JSON.parse(localStorage.getItem('Cart Items'))];
                     }
-                });
-            }); 
+
+                    cartItemsStorage = [ ... cartItemsStorage, cartItem];
+                    localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage));
+
+                    cartItemsNumber.innerHTML ++;
+                    
+                    Storage.displayCartItems(); 
+                } else {
+                    cartOverly.style.visibility = "visible";
+                    cart.style.right = "0%";
+                    page.style.overflowY = "hidden";
+                }
+            });
+        }); 
     }
 
     static itemsAmount() {
-        let cartItems = cElms('cart-item');
-        let cartItemsArray = [ ... cartItems];
+        cartItems = [ ... cElms('cart-item', cartContent)];
 
-        cartItemsArray.forEach(element => {
-            let itemAmount = qElm('.item-amount', element);
-            let addAmount = qElm('.fa-chevron-up', element);
-            let subtractAmount = qElm('.fa-chevron-down', element);
-            let removeItem = qElm('.remove-item', element);
+        cartItems.forEach(cartItem => {
+            const itemAmount = qElm('.item-amount', cartItem);
+            const addAmount = qElm('.fa-chevron-up', cartItem);
+            const subtractAmount = qElm('.fa-chevron-down', cartItem);
+            const removeItem = qElm('.remove-item', cartItem);
+            cartItemsStorage = JSON.parse(localStorage.getItem('Cart Items'));
 
-            addAmount.addEventListener('click', () => {
-                itemAmount.innerHTML ++;
+            addAmount.addEventListener('click', () => {  
+                cartItemsStorage.forEach(cartItemStorage => {
+                    if (Number(cartItem.getAttribute('data-id')) === Number(cartItemStorage.itemID)) {
+                        itemAmount.innerHTML ++;
+                        cartItemStorage.itemAmount = itemAmount.innerHTML;
+                    }
+                });
+
+                localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage))
                 this.totalItems();
                 this.totalPrice();
-                /////////// reassign itemAmount in localStorage
-                Storage.displayCartItems()
             });
 
             subtractAmount.addEventListener('click', () => {
-                if (itemAmount.innerHTML === '1') {
-                    itemAmount.innerHTML = 1;
-                    removeItem.style.animation = 'alert 0.3s';
-                    this.totalItems();
-                    this.totalPrice();
-                    /////////// reassign itemAmount in localStorage
-                    Storage.displayCartItems()
-                    setTimeout(() => {
-                        removeItem.style.removeProperty('animation');
-                    }, 300);
-                } else {
-                    itemAmount.innerHTML --;
-                    this.totalItems();
-                    this.totalPrice();
-                    /////////// reassign itemAmount in localStorage
-                    Storage.displayCartItems()
+                switch(true) {
+                    case Number(itemAmount.innerHTML) === 1 :
+                        removeItem.style.animation = 'alert 0.3s';
+                        cartItemsStorage.forEach(cartItemStorage => {
+                            if (Number(cartItem.getAttribute('data-id')) === Number(cartItemStorage.itemID)) {
+                                itemAmount.innerHTML = 1;
+                                cartItemStorage.itemAmount = itemAmount.innerHTML;
+                            }
+                        });
+                        setTimeout(() => {
+                            removeItem.style.removeProperty('animation');
+                        }, 300);
+                        break;
+                    case Number(itemAmount.innerHTML) !== 1 :
+                        cartItemsStorage.forEach(cartItemStorage => {
+                            if (Number(cartItem.getAttribute('data-id')) === Number(cartItemStorage.itemID)) {
+                                itemAmount.innerHTML --;
+                                cartItemStorage.itemAmount = itemAmount.innerHTML;
+                            }
+                        });
+                        break;
                 }
+                        
+                localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage))
+                this.totalItems();
+                this.totalPrice();
             });
         });
     }
@@ -209,24 +224,18 @@ class CartList {
         (() => {
             for(let i = 0; i < totalItemsArray.length; i++) {
                 totalResult += totalItemsArray[i];
-                /////// store in the local storage
             }
         })();
-        /////// assign the local storage to below
-        ////////// run the function at the DOM load too
         cartItemsNumber.innerHTML = totalResult;
     }
         
     static totalPrice() {
-        let cartItems = cElms('cart-item', cartContent);
-        let cartItemsArray = [ ... cartItems];
+        cartItems = [ ... cElms('cart-item', cartContent)];
         let itemsPricesArray = [];
         let itemsAmountsArray = [];
         let totalPrice = 0;
-        cartItemsArray.forEach(element => {
-            //create prices array
+        cartItems.forEach(element => {
             itemsPricesArray.push(Number(element.childNodes[3].childNodes[3].innerHTML.slice(1)))
-            //create amounts array
             itemsAmountsArray.push(Number(element.childNodes[5].childNodes[3].innerHTML))
         });
 
@@ -248,12 +257,12 @@ class CartList {
 class Storage {
     static displayCartItems() {
         if(localStorage.getItem('Cart Items') !== null) {
-            let cartItems = JSON.parse(localStorage.getItem('Cart Items'));
-            console.log(cartItems);
-            let addBtns = [... tElms('button', productsDisplayer)]
-            console.log(addBtns)
+            cartContent.innerHTML = '';
+            cartItemsStorage = JSON.parse(localStorage.getItem('Cart Items'));
+            let addBtns = [... tElms('button', productsDisplayer)];
+
             addBtns.forEach(btn => {
-                cartItems.forEach(element => {
+                cartItemsStorage.forEach(element => {
                     if (Number(btn.getAttribute('data-id')) === Number(element.itemID)) {
                         btn.innerHTML = 
                             `<i class="fas fa-shopping-cart"></i>
@@ -263,22 +272,24 @@ class Storage {
                     }
                 });
             });
-            cartItems.forEach(element => {
+        
+            cartItemsStorage.forEach(cartItemStorage => {
                 cartContent.innerHTML +=
-                                        `<div class="cart-item">
-                                            <img src=${element.itemImg} alt="product">
+                                        `<div class="cart-item" data-id=${cartItemStorage.itemID}>
+                                            <img src=${cartItemStorage.itemImg} alt="product">
                                             <div>
-                                                <h4>${element.itemName}</h4>
-                                                <h5>${element.itemPrice}</h5>
+                                                <h4>${cartItemStorage.itemName}</h4>
+                                                <h5>${cartItemStorage.itemPrice}</h5>
                                                 <span class="remove-item">remove</span>
                                             </div>
                                             <div>
                                                 <i class="fas fa-chevron-up"></i>
-                                                <p class="item-amount">${element.itemAmount}</p>
+                                                <p class="item-amount">${cartItemStorage.itemAmount}</p>
                                                 <i class="fas fa-chevron-down"></i>
                                             </div>
                                         </div>`;
             });
+
             CartList.itemsAmount();
             CartList.totalPrice(); 
         }
@@ -293,9 +304,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let displayProducts = await products.displayProducts(getProducts);
         await CartList.storeItems(displayProducts);
         await Storage.displayCartItems()
-        //////// this must be run after displayCartItems
-        //////// if cartContent > p.item-amount exists
-         CartList.totalItems();
+        CartList.totalItems();
     })()
 });
 
