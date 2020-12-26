@@ -4,6 +4,7 @@
 let qElm = (qElm, parent = document) => parent.querySelector(qElm);
 let qElms = (qElms, parent = document) => parent.querySelectorAll(qElms);
 let cElms = (cElms, parent = document) => parent.getElementsByClassName(cElms);
+let tElms = (tElms, parent = document) => parent.getElementsByTagName(tElms);
 
 /* variables declarations */
 const landingPageSection = qElm('.navbar-center h3');
@@ -19,7 +20,9 @@ const cart = qElm('.cart');
 const closeCart = qElm('.close-cart');
 const cartContent = qElm('.cart-content');
 const cartItemsNumber = qElm('.cart-items-number');
-const totalPriceDisplayer = qElm('.total-price')
+const totalPriceDisplayer = qElm('.total-price');
+
+let cartStorage = [];
 
 /* page transitions (navbar & hero) */
 landingPageSection.addEventListener('click', () => {
@@ -78,7 +81,7 @@ cart.addEventListener('click', (ev) => {
     ev.stopPropagation();
 });
 
-/* getting, displaying & adding products */
+/* getting, displaying & sending products to storage */
 class Products {
     async getProducts() {
         try {
@@ -96,64 +99,58 @@ class Products {
         }
     }
 
-    async displayProducts() {
-        try {
-            const productsList = await this.getProducts()
-            await productsList.items.forEach(element => {
-                productsDisplayer.innerHTML +=
-                `<div class="product">
-                    <div class="img-container">
-                        <img src=${element.image} alt="product image" class="product-img">
-                        <button class="bag-btn" data-id="${element.id}">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span>Add to bag</span>
-                        </button>
-                    </div>
-                    <h3 class="product-name">${element.name}</h3>
-                    <h3 class="product-price">$${element.price}</h3>
-                </div>`;
-            });
-            const availableProducts = cElms('product', productsDisplayer);
-            return availableProducts;
-        } catch(error) {
-            console.log(`Fetch Error: ${error}`);
-        }
+    async displayProducts(data) {
+        await data.items.forEach(element => {
+            productsDisplayer.innerHTML +=
+            `<div class="product">
+                <div class="img-container">
+                    <img src=${element.image} alt="product image" class="product-img">
+                    <button class="bag-btn" data-id="${element.id}">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Add to bag</span>
+                    </button>
+                </div>
+                <h3 class="product-name">${element.name}</h3>
+                <h3 class="product-price">$${element.price}</h3>
+            </div>`;
+        });
+        let availableProducts = cElms('product', productsDisplayer);
+        return availableProducts;
     }
+}
 
-    async addProducts() {
-        try {
-            const availableProducts = await this.displayProducts();       
+/* shopping cart sidebar */
+class CartList {
+    static async storeItems(availableProducts) {    
             let productsArray = [ ... availableProducts];
             productsArray.forEach(element => {
                 qElm('button', element).addEventListener('click', function() {
-                    const bagStat = qElm('span', this).innerHTML;
+                    let bagStat = qElm('span', this).innerHTML;
 
                     if (bagStat.includes("bag")) {
-                        cartContent.innerHTML +=
-                        `<div class="cart-item">
-                            <img src=${element.childNodes[1].childNodes[1].src} alt="product">
-                            <div>
-                                <h4>${element.childNodes[3].innerText}</h4>
-                                <h5>${element.childNodes[5].innerText}</h5>
-                                <span class="remove-item">remove</span>
-                            </div>
-                            <div>
-                                <i class="fas fa-chevron-up"></i>
-                                <p class="item-amount">1</p>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                        </div>`;
+                        let itemID = this.getAttribute('data-id');
+                        let itemImg = element.childNodes[1].childNodes[1].src;
+                        let itemName = element.childNodes[3].innerText;
+                        let itemPrice = element.childNodes[5].innerText;
+                        let cartItem = {
+                            itemID: itemID,
+                            itemName: itemName,
+                            itemPrice: itemPrice,
+                            itemImg: itemImg,
+                            itemAmount: 1,
+                            bagStat: 'Added'
+                        };
+    
+                        if (localStorage.getItem('Cart Items') !== null) {
+                            cartStorage = [ ... JSON.parse(localStorage.getItem('Cart Items'))];
+                        }
 
-                        this.innerHTML = 
-                        `<i class="fas fa-shopping-cart"></i>
-                        <span>Added</span>`;
-
-                        this.style.background = 'rgb(94, 175, 202)';
-                        this.style.color = 'white';
+                        cartStorage = [ ... cartStorage, cartItem];
+                        localStorage.setItem('Cart Items', JSON.stringify(cartStorage));
 
                         cartItemsNumber.innerHTML ++;
-                        CartList.itemsAmount();
-                        CartList.totalPrice();
+                        
+                        Storage.displayCartItems(); 
                     } else {
                         cartOverly.style.visibility = "visible";
                         cart.style.right = "0%";
@@ -161,14 +158,8 @@ class Products {
                     }
                 });
             }); 
-        } catch(error) {
-            console.log(`Fetch Error: ${error}`);
-        }
     }
-}
 
-/* shopping cart sidebar */
-class CartList {
     static itemsAmount() {
         let cartItems = cElms('cart-item');
         let cartItemsArray = [ ... cartItems];
@@ -183,6 +174,8 @@ class CartList {
                 itemAmount.innerHTML ++;
                 this.totalItems();
                 this.totalPrice();
+                /////////// reassign itemAmount in localStorage
+                Storage.displayCartItems()
             });
 
             subtractAmount.addEventListener('click', () => {
@@ -191,6 +184,8 @@ class CartList {
                     removeItem.style.animation = 'alert 0.3s';
                     this.totalItems();
                     this.totalPrice();
+                    /////////// reassign itemAmount in localStorage
+                    Storage.displayCartItems()
                     setTimeout(() => {
                         removeItem.style.removeProperty('animation');
                     }, 300);
@@ -198,6 +193,8 @@ class CartList {
                     itemAmount.innerHTML --;
                     this.totalItems();
                     this.totalPrice();
+                    /////////// reassign itemAmount in localStorage
+                    Storage.displayCartItems()
                 }
             });
         });
@@ -212,9 +209,12 @@ class CartList {
         (() => {
             for(let i = 0; i < totalItemsArray.length; i++) {
                 totalResult += totalItemsArray[i];
-                cartItemsNumber.innerHTML = totalResult;
+                /////// store in the local storage
             }
         })();
+        /////// assign the local storage to below
+        ////////// run the function at the DOM load too
+        cartItemsNumber.innerHTML = totalResult;
     }
         
     static totalPrice() {
@@ -231,7 +231,6 @@ class CartList {
         });
 
         for (let i = 0; i <itemsPricesArray.length; i++) {
-            console.clear();
             totalPrice += itemsPricesArray[i] * itemsAmountsArray[i];
             totalPriceDisplayer.innerHTML = totalPrice;
         }        
@@ -242,17 +241,62 @@ class CartList {
     }
 
     clearCart() {
-        
+
     }
 }
 
-/* invoking functions on DOM content load */
+class Storage {
+    static displayCartItems() {
+        if(localStorage.getItem('Cart Items') !== null) {
+            let cartItems = JSON.parse(localStorage.getItem('Cart Items'));
+            console.log(cartItems);
+            let addBtns = [... tElms('button', productsDisplayer)]
+            console.log(addBtns)
+            addBtns.forEach(btn => {
+                cartItems.forEach(element => {
+                    if (Number(btn.getAttribute('data-id')) === Number(element.itemID)) {
+                        btn.innerHTML = 
+                            `<i class="fas fa-shopping-cart"></i>
+                            <span>${element.bagStat}</span>`;
+                        btn.style.background = 'rgb(94, 175, 202)';
+                        btn.style.color = 'white';
+                    }
+                });
+            });
+            cartItems.forEach(element => {
+                cartContent.innerHTML +=
+                                        `<div class="cart-item">
+                                            <img src=${element.itemImg} alt="product">
+                                            <div>
+                                                <h4>${element.itemName}</h4>
+                                                <h5>${element.itemPrice}</h5>
+                                                <span class="remove-item">remove</span>
+                                            </div>
+                                            <div>
+                                                <i class="fas fa-chevron-up"></i>
+                                                <p class="item-amount">${element.itemAmount}</p>
+                                                <i class="fas fa-chevron-down"></i>
+                                            </div>
+                                        </div>`;
+            });
+            CartList.itemsAmount();
+            CartList.totalPrice(); 
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    // const cartList = new CartList();
     const products = new Products();
 
-    // getting, displaying & adding products
-    products.addProducts();
+    (async () => {
+        let getProducts = await products.getProducts();
+        let displayProducts = await products.displayProducts(getProducts);
+        await CartList.storeItems(displayProducts);
+        await Storage.displayCartItems()
+        //////// this must be run after displayCartItems
+        //////// if cartContent > p.item-amount exists
+         CartList.totalItems();
+    })()
 });
 
 
