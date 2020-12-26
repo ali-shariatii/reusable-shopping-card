@@ -123,7 +123,7 @@ class Products {
     async addProducts() {
         try {
             const availableProducts = await this.displayProducts();       
-            let productsArray = Array.from(availableProducts);
+            let productsArray = [ ... availableProducts];
             productsArray.forEach(element => {
                 qElm('button', element).addEventListener('click', function() {
                     const bagStat = qElm('span', this).innerHTML;
@@ -171,7 +171,7 @@ class Products {
 class CartList {
     static itemsAmount() {
         let cartItems = cElms('cart-item');
-        let cartItemsArray = Array.from(cartItems);
+        let cartItemsArray = [ ... cartItems];
 
         cartItemsArray.forEach(element => {
             let itemAmount = qElm('.item-amount', element);
@@ -219,7 +219,7 @@ class CartList {
         
     static totalPrice() {
         let cartItems = cElms('cart-item', cartContent);
-        let cartItemsArray = Array.from(cartItems);
+        let cartItemsArray = [ ... cartItems];
         let itemsPricesArray = [];
         let itemsAmountsArray = [];
         let totalPrice = 0;
@@ -242,7 +242,7 @@ class CartList {
     }
 
     clearCart() {
-
+        
     }
 }
 
