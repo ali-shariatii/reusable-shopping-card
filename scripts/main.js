@@ -18,10 +18,12 @@ const productsDisplayer = qElm('.products-center');
 const cartOverly = qElm('.cart-overlay');
 const cart = qElm('.cart');
 const closeCart = qElm('.close-cart');
+const clearCart = qElm('.clear-cart');
 const cartContent = qElm('.cart-content');
 const cartItemsNumber = qElm('.cart-items-number');
 const totalPriceDisplayer = qElm('.total-price');
 
+let bagBtns = [];
 let cartItemsStorage = [];
 let cartItems = [];
 
@@ -151,7 +153,8 @@ class CartList {
 
                     cartItemsNumber.innerHTML ++;
                     
-                    Storage.displayCartItems(); 
+                    Storage.displayCartItems();
+                    CartList.removeItem();
                 } else {
                     cartOverly.style.visibility = "visible";
                     cart.style.right = "0%";
@@ -180,8 +183,8 @@ class CartList {
                 });
 
                 localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage))
-                this.totalItems();
-                this.totalPrice();
+                CartList.totalItems();
+                CartList.totalPrice();
             });
 
             subtractAmount.addEventListener('click', () => {
@@ -209,54 +212,99 @@ class CartList {
                 }
                         
                 localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage))
-                this.totalItems();
-                this.totalPrice();
+                CartList.totalItems();
+                CartList.totalPrice();
             });
         });
     }
 
     static totalItems() {
         let totalItems = qElms('.item-amount', cartContent);
-        let totalItemsArray = [];
-        totalItems.forEach(element => totalItemsArray.push(Number(element.innerHTML)));
-        let totalResult = 0;
-        
-        (() => {
-            for(let i = 0; i < totalItemsArray.length; i++) {
-                totalResult += totalItemsArray[i];
-            }
-        })();
-        cartItemsNumber.innerHTML = totalResult;
+        if (totalItems.length > 0) {
+            let totalItemsArray = [];
+            totalItems.forEach(element => totalItemsArray.push(Number(element.innerHTML)));
+            let totalResult = 0;
+            
+            (() => {
+                for(let i = 0; i < totalItemsArray.length; i++) {
+                    totalResult += totalItemsArray[i];
+                }
+            })();
+            cartItemsNumber.innerHTML = totalResult;
+        } else {
+            cartItemsNumber.innerHTML = 0;
+        }
     }
         
     static totalPrice() {
         cartItems = [ ... cElms('cart-item', cartContent)];
-        let itemsPricesArray = [];
-        let itemsAmountsArray = [];
-        let totalPrice = 0;
-        cartItems.forEach(element => {
-            itemsPricesArray.push(Number(element.childNodes[3].childNodes[3].innerHTML.slice(1)))
-            itemsAmountsArray.push(Number(element.childNodes[5].childNodes[3].innerHTML))
+        if (cartItems.length > 0) {
+            let itemsPricesArray = [];
+            let itemsAmountsArray = [];
+            let totalPrice = 0;
+            cartItems.forEach(element => {
+                itemsPricesArray.push(Number(element.childNodes[3].childNodes[3].innerHTML.slice(1)))
+                itemsAmountsArray.push(Number(element.childNodes[5].childNodes[3].innerHTML))
+            });
+    
+            for (let i = 0; i <itemsPricesArray.length; i++) {
+                totalPrice += itemsPricesArray[i] * itemsAmountsArray[i];
+                totalPriceDisplayer.innerHTML = totalPrice;
+            }  
+        } else {
+            totalPriceDisplayer.innerHTML = 0;
+        }    
+    }
+
+    static removeItem() {
+        bagBtns = [ ... cElms('bag-btn', productsDisplayer)];
+        cartItems = [ ... cElms('cart-item', cartContent)];
+        cartItemsStorage = JSON.parse(localStorage.getItem('Cart Items'));  
+        cartItems.forEach(cartItem => {
+            let removeItem = qElm('.remove-item', cartItem);
+            removeItem.addEventListener('click', () => {
+                cartItemsStorage.forEach(cartItemStorage => {
+                    if (Number(cartItemStorage.itemID) === Number(cartItem.getAttribute('data-id'))) {
+                        cartItemsStorage.splice(cartItemsStorage.indexOf(cartItemStorage), 1);
+                        localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage));
+                        Storage.displayCartItems();
+                        CartList.totalItems();
+                        CartList.totalPrice();
+                        bagBtns.forEach(bagBtn => {
+                            if (Number(bagBtn.getAttribute('data-id')) === Number(cartItemStorage.itemID)) {
+                                bagBtn.style.background = 'white';
+                                bagBtn.style.color = 'rgb(94, 175, 202)';
+                                bagBtn.innerHTML = 
+                                    `<i class="fas fa-shopping-cart"></i>
+                                    <span>Add to bag</span>`;
+                            }
+                        });
+                    }
+                });
+            });
         });
-
-        for (let i = 0; i <itemsPricesArray.length; i++) {
-            totalPrice += itemsPricesArray[i] * itemsAmountsArray[i];
-            totalPriceDisplayer.innerHTML = totalPrice;
-        }        
     }
 
-    removeItem() {
-
-    }
-
-    clearCart() {
-
+    static clearCart() {
+        bagBtns = [ ... cElms('bag-btn', productsDisplayer)];
+        localStorage.setItem('Cart Items', JSON.stringify([]));
+        Storage.displayCartItems();
+        CartList.totalItems();
+        CartList.totalPrice();
+        
+        bagBtns.forEach(bagBtn => {
+            bagBtn.style.background = 'white';
+            bagBtn.style.color = 'rgb(94, 175, 202)';
+            bagBtn.innerHTML = 
+                `<i class="fas fa-shopping-cart"></i>
+                <span>Add to bag</span>`;
+        })
     }
 }
 
 class Storage {
     static displayCartItems() {
-        if(localStorage.getItem('Cart Items') !== null) {
+        if(localStorage.getItem('Cart Items') !== null || localStorage.getItem('Cart Items') !== undefined || localStorage.getItem('Cart Items') !== '[]') {
             cartContent.innerHTML = '';
             cartItemsStorage = JSON.parse(localStorage.getItem('Cart Items'));
             let addBtns = [... tElms('button', productsDisplayer)];
@@ -305,7 +353,12 @@ document.addEventListener('DOMContentLoaded', () => {
         await CartList.storeItems(displayProducts);
         await Storage.displayCartItems()
         CartList.totalItems();
+        CartList.removeItem();
     })()
+
+    clearCart.addEventListener('click', () => {
+        CartList.clearCart();   
+    });
 });
 
 
