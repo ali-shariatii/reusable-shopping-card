@@ -11,17 +11,15 @@ const landingPageSection = qElm('.navbar-center h3');
 const menuBtn = qElms('.nav-icon')[0];
 const menuBar = qElm('.dropdown-menu');
 const menuBarOptions = qElms('.dropdown-menu li');
-const cartBtn = qElm('.cart-btn');
-const page = qElm('body');
 const bannerBtn = qElm('.banner-btn');
 const productsDisplayer = qElm('.products-center');
-const cartOverly = qElm('.cart-overlay');
+const cartBtn = qElm('.cart-btn');
 const cart = qElm('.cart');
-const closeCart = qElm('.close-cart');
-const clearCart = qElm('.clear-cart');
+const clearCart = qElm('.clear-cart-btn');
 const cartContent = qElm('.cart-content');
 const cartItemsNumber = qElm('.cart-items-number');
 const totalPriceDisplayer = qElm('.total-price');
+const hidingTriggerAreas = [qElm('.hero'), qElm('.products'), qElm('.navbar')];
 
 let bagBtns = [];
 let cartItemsStorage = [];
@@ -34,10 +32,17 @@ landingPageSection.addEventListener('click', () => {
 });
 
 menuBtn.addEventListener('click', (ev) => {
-    menuBar.style.transform.includes("rotateX(90deg)") 
-        ? menuBar.style.transform = "translateY(70px) rotateX(0deg)"
-        : menuBar.style.transform = "translateY(70px) rotateX(90deg)"
-    ev.stopPropagation()
+    switch(true) {
+        case menuBar.style.transform.includes("rotateX(90deg)") :
+            menuBar.style.transform = "translateY(70px) rotateX(0deg)"
+            cart.style.transform = 'rotateX(90deg)';
+            cart.style.top = '20px';
+            break;
+        default :
+            menuBar.style.transform = "translateY(70px) rotateX(90deg)";
+            break;
+    }  
+    ev.stopPropagation()  
 })
 
 menuBarOptions[0].addEventListener('click', () => {
@@ -50,38 +55,33 @@ menuBarOptions[1].addEventListener('click', () => {
     location.hash = 'productsSection';
 });
 
-page.addEventListener('click', (ev) => {
-    menuBar.style.transform = "translateY(70px) rotateX(90deg)";
-    ev.stopPropagation()
-});
-
 bannerBtn.addEventListener('click', () => {
     location.hash = 'unknown';
     location.hash = 'productsSection';
 });
 
-/* displaying & hiding shopping cart sidebar */
-cartBtn.addEventListener('click', () => {
-    cartOverly.style.visibility = "visible";
-    cart.style.right = "0%";
-    page.style.overflowY = "hidden";
-});
-
-closeCart.addEventListener('click', () => {
-    cartOverly.style.visibility = "hidden";
-    cart.style.right = "-100%";
-    page.style.overflowY = "scroll";
-});
-
-cartOverly.addEventListener('click', function(ev) {
-    this.style.visibility = "hidden";
-    cart.style.right = "-100%";
-    page.style.overflowY = "scroll";
+/* displaying & hiding shopping cart */
+cartBtn.addEventListener('click', (ev) => {
+    switch (true) {
+        case cart.style.transform.includes("rotateX(90deg)"):
+            cart.style.transform = 'rotateX(0deg)';
+            cart.style.top = '62px';
+            menuBar.style.transform = "translateY(70px) rotateX(90deg)";
+            break;
+        default:
+            cart.style.transform = 'rotateX(90deg)';
+            cart.style.top = '20px';
+            break;
+    }
     ev.stopPropagation();
 });
 
-cart.addEventListener('click', (ev) => {
-    ev.stopPropagation();
+hidingTriggerAreas.forEach(item => {
+    item.addEventListener('click', () => {
+        cart.style.transform = 'rotateX(90deg)';
+        cart.style.top = '20px';
+        menuBar.style.transform = "translateY(70px) rotateX(90deg)";
+    });
 });
 
 /* getting, displaying & sending products to storage */
@@ -122,7 +122,7 @@ class Products {
     }
 }
 
-/* shopping cart sidebar */
+/* shopping cart */
 class CartList {
     static async storeItems(availableProducts) {    
         let productsArray = [ ... availableProducts];
