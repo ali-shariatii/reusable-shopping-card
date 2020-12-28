@@ -24,6 +24,7 @@ const hidingTriggerAreas = [qElm('.hero'), qElm('.products'), qElm('.navbar')];
 let bagBtns = [];
 let cartItemsStorage = [];
 let cartItems = [];
+let removeItemBtns;
 
 /* page transitions (navbar & hero) */
 landingPageSection.addEventListener('click', () => {
@@ -154,11 +155,9 @@ class CartList {
                     cartItemsNumber.innerHTML ++;
                     
                     Storage.displayCartItems();
+                    CartList.totalItems();
+                    CartList.totalPrice();
                     CartList.removeItem();
-                } else {
-                    cartOverly.style.visibility = "visible";
-                    cart.style.right = "0%";
-                    page.style.overflowY = "hidden";
                 }
             });
         }); 
@@ -171,7 +170,7 @@ class CartList {
             const itemAmount = qElm('.item-amount', cartItem);
             const addAmount = qElm('.fa-chevron-up', cartItem);
             const subtractAmount = qElm('.fa-chevron-down', cartItem);
-            const removeItem = qElm('.remove-item', cartItem);
+            const removeItemBtn = qElm('.remove-item-btn', cartItem);
             cartItemsStorage = JSON.parse(localStorage.getItem('Cart Items'));
 
             addAmount.addEventListener('click', () => {  
@@ -183,14 +182,14 @@ class CartList {
                 });
 
                 localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage))
-                CartList.totalItems();
-                CartList.totalPrice();
+                this.totalItems();
+                this.totalPrice();
             });
 
             subtractAmount.addEventListener('click', () => {
                 switch(true) {
                     case Number(itemAmount.innerHTML) === 1 :
-                        removeItem.style.animation = 'alert 0.3s';
+                        removeItemBtn.style.animation = 'alert 0.3s';
                         cartItemsStorage.forEach(cartItemStorage => {
                             if (Number(cartItem.getAttribute('data-id')) === Number(cartItemStorage.itemID)) {
                                 itemAmount.innerHTML = 1;
@@ -198,7 +197,7 @@ class CartList {
                             }
                         });
                         setTimeout(() => {
-                            removeItem.style.removeProperty('animation');
+                            removeItemBtn.style.removeProperty('animation');
                         }, 300);
                         break;
                     case Number(itemAmount.innerHTML) !== 1 :
@@ -212,8 +211,8 @@ class CartList {
                 }
                         
                 localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage))
-                CartList.totalItems();
-                CartList.totalPrice();
+                this.totalItems();
+                this.totalPrice();
             });
         });
     }
@@ -257,32 +256,35 @@ class CartList {
     }
 
     static removeItem() {
+        removeItemBtns = [ ... cElms('remove-item-btn', cartContent)];
         bagBtns = [ ... cElms('bag-btn', productsDisplayer)];
-        cartItems = [ ... cElms('cart-item', cartContent)];
-        cartItemsStorage = JSON.parse(localStorage.getItem('Cart Items'));  
-        cartItems.forEach(cartItem => {
-            let removeItem = qElm('.remove-item', cartItem);
-            removeItem.addEventListener('click', () => {
-                cartItemsStorage.forEach(cartItemStorage => {
-                    if (Number(cartItemStorage.itemID) === Number(cartItem.getAttribute('data-id'))) {
-                        cartItemsStorage.splice(cartItemsStorage.indexOf(cartItemStorage), 1);
-                        localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage));
-                        Storage.displayCartItems();
-                        CartList.totalItems();
-                        CartList.totalPrice();
-                        bagBtns.forEach(bagBtn => {
-                            if (Number(bagBtn.getAttribute('data-id')) === Number(cartItemStorage.itemID)) {
-                                bagBtn.style.background = 'white';
-                                bagBtn.style.color = 'rgb(94, 175, 202)';
-                                bagBtn.innerHTML = 
-                                    `<i class="fas fa-shopping-cart"></i>
-                                    <span>Add to bag</span>`;
-                            }
-                        });
-                    }
+        if (Number(removeItemBtns.length) > 0) {
+            for (let i = 0; i < removeItemBtns.length; i++) {
+                removeItemBtns[i].addEventListener('click', () => {
+                    cartItemsStorage = JSON.parse(localStorage.getItem('Cart Items'))
+                    for (let j = 0; j < cartItemsStorage.length; j++) {
+                        if (Number(cartItemsStorage[j].itemID) === Number(removeItemBtns[i].getAttribute('data-id'))) {
+                            cartItemsStorage.splice(cartItemsStorage.indexOf(cartItemsStorage[j]), 1);
+                            localStorage.setItem('Cart Items', JSON.stringify(cartItemsStorage))
+                            Storage.displayCartItems();
+                            CartList.totalItems();
+                            CartList.totalPrice();
+                            bagBtns.forEach(bagBtn => {
+                                if (Number(bagBtn.getAttribute('data-id')) === Number(removeItemBtns[i].getAttribute('data-id'))) {
+                                    bagBtn.style.background = 'white';
+                                    bagBtn.style.color = 'rgb(94, 175, 202)';
+                                    bagBtn.innerHTML = 
+                                        `<i class="fas fa-shopping-cart"></i>
+                                        <span>Add to bag</span>`;
+                                    bagBtn.style.cursor = 'pointer';
+                                }
+                            })
+                            this.removeItem();
+                        }
+                    };
                 });
-            });
-        });
+            };
+        }
     }
 
     static clearCart() {
@@ -317,6 +319,7 @@ class Storage {
                             <span>${element.bagStat}</span>`;
                         btn.style.background = 'rgb(94, 175, 202)';
                         btn.style.color = 'white';
+                        btn.style.cursor = 'auto';
                     }
                 });
             });
@@ -328,7 +331,7 @@ class Storage {
                                             <div>
                                                 <h4>${cartItemStorage.itemName}</h4>
                                                 <h5>${cartItemStorage.itemPrice}</h5>
-                                                <span class="remove-item">remove</span>
+                                                <span class="remove-item-btn" data-id="${cartItemStorage.itemID}">remove</span>
                                             </div>
                                             <div>
                                                 <i class="fas fa-chevron-up"></i>
