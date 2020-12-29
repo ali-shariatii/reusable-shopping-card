@@ -229,7 +229,7 @@ body {
 .cart-content {
     display: flex;
     flex-flow: nowrap column;
-    gap: 1rem;
+    /* gap: 1rem; */
 }
 
 /* a single cart item */
@@ -237,6 +237,7 @@ body {
     display: grid;
     grid-template-columns: auto 1fr auto;
     gap: 1rem;
+    margin: 0.5rem 0;
 }
 
 .cart-item img {
