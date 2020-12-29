@@ -359,9 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         CartList.removeItem();
     })()
 
-    clearCart.addEventListener('click', () => {
-        CartList.clearCart();   
-    });
+    clearCart.addEventListener('click', CartList.clearCart);
 });
 
 
