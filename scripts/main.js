@@ -309,7 +309,6 @@ class Storage {
         if(localStorage.getItem('Cart Items') !== null) {
             cartContent.innerHTML = '';
             cartItemsStorage = [ ... JSON.parse(localStorage.getItem('Cart Items'))];
-            console.log(cartItemsStorage)
             let addBtns = [... tElms('button', productsDisplayer)];
 
             addBtns.forEach(btn => {
