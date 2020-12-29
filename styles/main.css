@@ -212,7 +212,13 @@ body {
     border-bottom-right-radius: 12px;
     padding: 2rem;
     transform: rotateX(90deg);
+    -ms-overflow-style: none;
+    scrollbar-width: none;
 }
+
+.cart::-webkit-scrollbar {
+    display: none;
+  }
 
 .cart h2 {
     text-align: center;
