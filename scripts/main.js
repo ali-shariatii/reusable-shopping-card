@@ -305,10 +305,11 @@ class CartList {
 }
 
 class Storage {
-    static displayCartItems() {
-        if(localStorage.getItem('Cart Items') !== null || localStorage.getItem('Cart Items') !== undefined || localStorage.getItem('Cart Items') !== '[]') {
+    static async displayCartItems() {
+        if(localStorage.getItem('Cart Items') !== null) {
             cartContent.innerHTML = '';
-            cartItemsStorage = JSON.parse(localStorage.getItem('Cart Items'));
+            cartItemsStorage = [ ... JSON.parse(localStorage.getItem('Cart Items'))];
+            console.log(cartItemsStorage)
             let addBtns = [... tElms('button', productsDisplayer)];
 
             addBtns.forEach(btn => {
