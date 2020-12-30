@@ -25,7 +25,7 @@ Check out the live version [here](https://ali-shariatii.github.io/shopping-cart/
 <!-- built -->
 ## Built with
 
-* JavaScript
+* JavaScript & WebAPI
 * JSON, JSON API
 * HTML
 * CSS
@@ -58,7 +58,7 @@ Minimum recommended technical knowledge prior to rebuilding the project:
     * -webkit
     * responsive css units
     * media queries
-* JavaScript & JSON
+* JavaScript, WebAPI & JSON
     * writing and reading JSON file
     * fetch API from JSON
     * DOM manipulation & DOM methods
