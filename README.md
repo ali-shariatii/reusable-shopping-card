@@ -91,11 +91,12 @@ Minimum recommended technical knowledge prior to rebuilding the project:
 ## Next Releases
 
 * v1.1
-    * checking flexbox gap property for safari compatibility issue
-    * visual design control for big screens
+    * checking flexbox gap property for safari and small devices. 
+    * adding margin top/bottom for the checkout btn
     * changing pixels to rem
     * safari incompatibilty: smooth transition between sections
     * hover and click effect for touch devices
+    * further quality control for small devices and big screens
 * v2.0
     * checkout page featuring tax calculator based on postal code
 
