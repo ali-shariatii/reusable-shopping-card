@@ -37,6 +37,8 @@ Check out the live version [here](https://ali-shariatii.github.io/shopping-cart/
 * Responsive Styling
 * Interactive Coding
 * Visual Studio Code
+* Cross-Browser Testing
+* Debugging Techniques
 
 <!-- prerequisites -->
 ## Prerequisites
