@@ -61,6 +61,7 @@ Minimum recommended technical knowledge prior to rebuilding the project:
     * -webkit
     * responsive css units
     * media queries
+    * font awesome
 * JavaScript, WebAPI & JSON
     * writing and reading JSON file
     * fetch API from JSON
@@ -113,8 +114,8 @@ Minimum recommended technical knowledge prior to rebuilding the project:
 <!-- contact -->
 ## Contact
 
-[Email](mailto:a.shariatii91@gmail.com) | [Portfolio](https://alishariatii.com/) | [Blog](https://blog.alishariatii.com/) | [GitHub](https://github.com/ali-shariatii/) | [LinkedIn](https://www.linkedin.com/in/ali-shariatii/)  
-[Dev.to](https://dev.to/alishariatii) | [Twitter](https://twitter.com/a_shariatii) | [YouTube](https://www.youtube.com/channel/UCtMqKuobuxPU_9ZIp8vZXgw) | [Instagram](https://www.instagram.com/web_block/)  | [Facebook](https://www.facebook.com/webblokk)
+[Email](mailto:a.shariatii91@gmail.com) | [Portfolio](https://alishariatii.com/) | [GitHub](https://github.com/ali-shariatii/) | [Dev.to](https://dev.to/alishariatii) | [LinkedIn](https://www.linkedin.com/in/ali-shariatii/)   
+[Stack Overflow](https://stackoverflow.com/users/13517523/ali-shariati) | [Twitter](https://twitter.com/a_shariatii) | [YouTube](https://www.youtube.com/channel/UCtMqKuobuxPU_9ZIp8vZXgw) | [Instagram](https://www.instagram.com/web_block/)  | [Facebook](https://www.facebook.com/webblokk)
 
 
 <!-- 
